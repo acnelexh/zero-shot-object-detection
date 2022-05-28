@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DATA_DIR=/data/lvis
+DEST_DIR=/data/lvis/lvis_tfrecords
+VAL_JSON="${DATA_DIR}/lvis_v1_val.json"
+python3 preprocessing/create_lvis_tf_record.py \
+  --image_dir="${DATA_DIR}" \
+  --json_path="${VAL_JSON}" \
+  --dest_dir="${DEST_DIR}" \
+  --include_mask=True \
+  --split='val' \
+  --num_parts=100 \
+  --max_num_processes=100

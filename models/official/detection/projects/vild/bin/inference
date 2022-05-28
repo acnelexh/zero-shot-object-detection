@@ -1,0 +1,17 @@
+#!/bin/bash
+
+BATCH_SIZE=1
+RESNET_DEPTH=50
+MODEL_DIR=~/tpu/models/official/detection/projects/vild/models/resnet50_vild/
+EVAL_FILE_PATTERN="./data/lvis/lvis_tfrecords/val*"
+VAL_JSON_FILE="./data/lvis/lvis_v1_val.json"
+RARE_MASK_PATH="./CLIP_embed/lvis_rare_masks.npy"
+CLASSIFIER_WEIGHT_PATH="./CLIP_embed/clip_synonym_prompt.npy"
+CONFIG_FILE="./configs/vild_resnet.yaml"
+python3 ~/tpu/models/official/detection/main.py \
+  --model="vild" \
+  --model_dir="${MODEL_DIR?}" \
+  --mode=eval \
+  --use_tpu=False \
+  --config_file="${CONFIG_FILE?}" \
+  --params_override="{ resnet: {resnet_depth: ${RESNET_DEPTH?}}, predict: {predict_batch_size: ${BATCH_SIZE?}}, eval: {eval_batch_size: ${BATCH_SIZE?}, val_json_file: ${VAL_JSON_FILE?}, eval_file_pattern: ${EVAL_FILE_PATTERN?} }, frcnn_head: {classifier_weight_path: ${CLASSIFIER_WEIGHT_PATH?}}, postprocess: {rare_mask_path: ${RARE_MASK_PATH?}}}"

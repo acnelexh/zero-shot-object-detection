@@ -16,3 +16,5 @@ __pycache__
 *.swp
 .vscode/
 data/
+env/
+model.ckpt*
