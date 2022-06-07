@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DATA_DIR=/data/lvis
-DEST_DIR=/data/lvis/lvis_tfrecords
+DATA_DIR=data/lvis
+DEST_DIR=data/lvis_tfrecords
 VAL_JSON="${DATA_DIR}/lvis_v1_val.json"
 python3 preprocessing/create_lvis_tf_record.py \
   --image_dir="${DATA_DIR}" \

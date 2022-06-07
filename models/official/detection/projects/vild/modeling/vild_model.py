@@ -31,7 +31,7 @@ from ops import target_ops
 from projects.vild.modeling import vild_losses
 from projects.vild.ops import postprocess_ops
 from utils import box_utils
-
+import pdb
 
 class ViLDModel(base_model.BaseModel):
   """Mask R-CNN model function."""
@@ -63,6 +63,7 @@ class ViLDModel(base_model.BaseModel):
         params.architecture.mask_target_size,
         params.mask_sampling.num_mask_samples_per_image)
 
+    #pdb.set_trace()
     self._frcnn_head_fn = factory.vild_fast_rcnn_head_generator(params)
     if self._include_mask:
       self._mrcnn_head_fn = factory.mask_rcnn_head_generator(params)
@@ -70,6 +71,7 @@ class ViLDModel(base_model.BaseModel):
     # Loss function.
     self._rpn_score_loss_fn = losses.RpnScoreLoss(params.rpn_score_loss)
     self._rpn_box_loss_fn = losses.RpnBoxLoss(params.rpn_box_loss)
+    #pdb.set_trace()
     self._frcnn_class_loss_fn = vild_losses.FastrcnnClassLoss(
         params.frcnn_class_loss)
     self._frcnn_box_loss_fn = losses.FastrcnnBoxLoss(
@@ -182,6 +184,8 @@ class ViLDModel(base_model.BaseModel):
       })
 
     if not is_training:
+      #import pdb
+      #pdb.set_trace()
       detection_results = self._generate_detections_fn(
           box_outputs,
           class_outputs,

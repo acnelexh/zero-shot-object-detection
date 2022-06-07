@@ -197,6 +197,8 @@ def fast_rcnn_head_generator(params):
 def vild_fast_rcnn_head_generator(params):
   """Generator function for Fast R-CNN head architecture."""
   head_params = params.frcnn_head
+  #import pdb
+  #pdb.set_trace()
   return vild_head.ViLDFastrcnnHead(
       num_classes=params.architecture.num_classes,
       num_convs=head_params.num_convs,

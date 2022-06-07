@@ -99,6 +99,7 @@ def _generate_detections_v1(boxes,
     nmsed_scores = []
     valid_detections = []
     for i in range(batch_size):
+      print(i)
       (nmsed_boxes_i, nmsed_scores_i, nmsed_classes_i,
        valid_detections_i) = _generate_detections_per_image(
            boxes[i],
@@ -187,6 +188,8 @@ def _generate_detections_per_image(boxes,
     nmsed_scores.append(nmsed_scores_i)
     nmsed_classes.append(nmsed_classes_i)
 
+  #import pdb
+  #pdb.set_trace()
   # Concats results from all classes and sort them.
   nmsed_boxes = tf.concat(nmsed_boxes, axis=0)
   nmsed_scores = tf.concat(nmsed_scores, axis=0)
@@ -547,6 +550,8 @@ class GenericDetectionGenerator(object):
           'raw_scores': class_outputs,
       }
 
+    #import pdb
+    #pdb.set_trace()
     nmsed_boxes, nmsed_scores, nmsed_classes, valid_detections = (
         self._generate_detections(decoded_boxes, class_outputs))
 

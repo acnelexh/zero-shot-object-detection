@@ -301,11 +301,15 @@ class ViLDFastrcnnHead(object):
 
       # ---------------- CLASSIFICATION LAYER ----------------
       with tf.gfile.GFile(self._classifier_weight_path, 'rb') as fp:
-        loaded_numpy = np.load(fp)
+        #import pdb
+        #pdb.set_trace()
+        loaded_numpy = np.load(fp, allow_pickle=True)
         # the shape of current version of CLIP text feature
         tf.logging.info(f'loaded_numpy.shape: {loaded_numpy.shape};'
                         f' clip dim: {self._clip_dim};'
                         f' num_classes: {self._num_classes}')
+        import pdb
+        pdb.set_trace()
         assert loaded_numpy.shape == (self._clip_dim, self._num_classes - 1)
         kernel_initializer = tf.initializers.constant(loaded_numpy)
 

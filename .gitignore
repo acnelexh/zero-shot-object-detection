@@ -18,3 +18,5 @@ __pycache__
 data/
 env/
 model.ckpt*
+tmp/
+resnet152_vild/

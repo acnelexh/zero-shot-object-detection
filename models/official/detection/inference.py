@@ -43,7 +43,7 @@ from utils import input_utils
 from utils import mask_utils
 from utils.object_detection import visualization_utils
 from hyperparameters import params_dict
-
+import pdb
 
 FLAGS = flags.FLAGS
 
@@ -98,7 +98,7 @@ def main(unused_argv):
   else:
     raise ValueError(
         'Unsupported label map format: {}.'.format(FLAGS.label_mape_format))
-
+  
   params = config_factory.config_generator(FLAGS.model)
   if FLAGS.config_file:
     params = params_dict.override_params_dict(
@@ -113,8 +113,9 @@ def main(unused_argv):
   params.validate()
   params.lock()
 
+  #pdb.set_trace()
   model = model_factory.model_generator(params)
-
+  #pdb.set_trace()
   with tf.Graph().as_default():
     image_input = tf.placeholder(shape=(), dtype=tf.string)
     image = tf.io.decode_image(image_input, channels=3)
@@ -145,7 +146,6 @@ def main(unused_argv):
 
     # Create a saver in order to load the pre-trained checkpoint.
     saver = tf.train.Saver()
-
     image_with_detections_list = []
     with tf.Session() as sess:
       print(' - Loading the checkpoint...')
@@ -163,7 +163,8 @@ def main(unused_argv):
         width, height = image.size
         np_image = (np.array(image.getdata())
                     .reshape(height, width, 3).astype(np.uint8))
-
+                    
+        pdb.set_trace()
         predictions_np = sess.run(
             predictions, feed_dict={image_input: image_bytes})
 

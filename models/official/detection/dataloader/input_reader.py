@@ -128,6 +128,8 @@ class InputFn(object):
                                                     params)
 
   def __call__(self, params):
+    #import pdb
+    #pdb.set_trace()
     batch_size = params['batch_size']
     dataset = self._dataset_fn(params, self._mode)
     dataset = dataset.batch(batch_size, drop_remainder=True)

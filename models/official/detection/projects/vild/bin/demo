@@ -1,0 +1,29 @@
+#!/bin/bash
+
+RESNET_DEPTH=50
+BATCH_SIZE=1
+NUM_CLASS=4
+WEIGHTS_DIR=CLIP_embed
+CLASSIFIER_WEIGHT_PATH="tmp/label_embed.npy"
+RARE_MASK_PATH="${WEIGHTS_DIR}/lvis_rare_masks.npy"
+
+MODEL="vild"
+IMAGE_SIZE=640
+CHECKPOINT_PATH="models/resnet50_vild/model.ckpt-180000"
+IMAGE_FILE_PATTERN="data/demo/superman_batman.jpg"
+LABEL_MAP_FILE="tmp/label_map.csv"
+PARAMS_OVERRIDE="{resnet: {resnet_depth: ${RESNET_DEPTH?}}, architecture: {num_classes: ${NUM_CLASS}}, predict: {predict_batch_size: ${BATCH_SIZE?}}, frcnn_head: {classifier_weight_path: ${CLASSIFIER_WEIGHT_PATH?}}, postprocess: {rare_mask_path: ${RARE_MASK_PATH?}}, frcnn_class_loss: {'mask_rare': True, rare_mask_path: ${RARE_MASK_PATH?}}}"
+OUTPUT_HTML="./test.html"
+CONFIG_FILE="configs/vild_resnet.yaml"
+python ~/tpu/models/official/detection/inference.py \
+  --model="${MODEL?}" \
+  --image_size="${IMAGE_SIZE?}" \
+  --checkpoint_path="${CHECKPOINT_PATH?}" \
+  --label_map_file="${LABEL_MAP_FILE?}" \
+  --image_file_pattern="${IMAGE_FILE_PATTERN?}" \
+  --output_html="${OUTPUT_HTML?}" \
+  --max_boxes_to_draw=10 \
+  --min_score_threshold=0.05 \
+  --params_override="${PARAMS_OVERRIDE}" \
+  --batch_size="${BATCH_SIZE}"\
+  --config_file="${CONFIG_FILE}"

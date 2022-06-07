@@ -385,7 +385,8 @@ class BaseModel(six.with_metaclass(abc.ABCMeta, object)):
     """
     images = features['images']
     labels = features['labels']
-
+    #import pdb
+    #pdb.set_trace()
     outputs = self.build_outputs(images, labels, mode=mode_keys.PREDICT)
     # Log model statistics.
     batch_size = images.get_shape().as_list()[0]

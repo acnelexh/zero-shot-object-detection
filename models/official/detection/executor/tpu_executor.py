@@ -156,6 +156,8 @@ class TpuExecutor(object):
       val_json_file = os.path.join(self._params.model_dir,
                                    'eval_annotation_file.json')
       if self._params.eval.val_json_file:
+        #import pdb
+        #pdb.set_trace()
         tf.gfile.Copy(
             self._params.eval.val_json_file, val_json_file, overwrite=True)
       else:
@@ -202,6 +204,8 @@ class TpuExecutor(object):
       counter = 0
       try:
         while eval_times is None or counter < eval_times:
+          #import pdb
+          #pdb.set_trace()
           outputs = six.next(predictor)
           predictions = {}
           groundtruths = {}

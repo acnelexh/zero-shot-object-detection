@@ -27,6 +27,7 @@ from absl import logging
 import six
 from six.moves import range
 import tensorflow.compat.v1 as tf
+import pdb
 
 from configs import factory
 from dataloader import input_reader
@@ -68,13 +69,13 @@ def main(argv):
   del argv  # Unused.
 
   params = factory.config_generator(FLAGS.model)
-
   if FLAGS.config_file:
     params = params_dict.override_params_dict(
         params, FLAGS.config_file, is_strict=True)
 
   params = params_dict.override_params_dict(
       params, FLAGS.params_override, is_strict=True)
+
   params.override({
       'use_tpu': FLAGS.use_tpu,
       'model_dir': FLAGS.model_dir,
@@ -113,6 +114,7 @@ def main(argv):
   logging.info('Model Parameters: %s', params_str)
 
   # Builds detection model on TPUs.
+  pdb.set_trace()
   model_fn = model_builder.ModelFn(params)
   executor = tpu_executor.TpuExecutor(model_fn, params)
 
@@ -156,6 +158,7 @@ def main(argv):
       current_step = int(six.ensure_str(os.path.basename(ckpt)).split('-')[1])
 
       logging.info('Starting to evaluate.')
+      pdb.set_trace()
       try:
         executor.evaluate(eval_input_fn, eval_times, ckpt)
 
