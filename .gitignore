@@ -20,3 +20,5 @@ env/
 model.ckpt*
 tmp/
 resnet152_vild/
+resnet50_vild/
+fake_model8/

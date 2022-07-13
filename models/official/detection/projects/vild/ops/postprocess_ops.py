@@ -27,7 +27,7 @@ import tensorflow.compat.v1 as tf
 
 from ops import nms
 from utils import box_utils
-
+import pdb
 
 def generate_detections_factory(params):
   """Factory to select function to generate detection."""
@@ -45,6 +45,7 @@ def generate_detections_factory(params):
         score_threshold=params.score_threshold,
         pre_nms_num_boxes=params.pre_nms_num_boxes)
   else:
+    #pdb.set_trace()
     func = functools.partial(
         _generate_detections_v1,
         max_total_size=params.max_total_size,
@@ -92,6 +93,7 @@ def _generate_detections_v1(boxes,
     valid_detections: `int` Tensor of shape [batch_size] only the top
       `valid_detections` boxes are valid detections.
   """
+  pdb.set_trace()
   with tf.name_scope('generate_detections'):
     batch_size = scores.get_shape().as_list()[0]
     nmsed_boxes = []
@@ -99,7 +101,7 @@ def _generate_detections_v1(boxes,
     nmsed_scores = []
     valid_detections = []
     for i in range(batch_size):
-      print(i)
+      #print(i)
       (nmsed_boxes_i, nmsed_scores_i, nmsed_classes_i,
        valid_detections_i) = _generate_detections_per_image(
            boxes[i],
@@ -112,6 +114,7 @@ def _generate_detections_v1(boxes,
       nmsed_scores.append(nmsed_scores_i)
       nmsed_classes.append(nmsed_classes_i)
       valid_detections.append(valid_detections_i)
+  pdb.set_trace()
   nmsed_boxes = tf.stack(nmsed_boxes, axis=0)
   nmsed_scores = tf.stack(nmsed_scores, axis=0)
   nmsed_classes = tf.stack(nmsed_classes, axis=0)

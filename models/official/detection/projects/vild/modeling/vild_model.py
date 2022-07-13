@@ -79,7 +79,7 @@ class ViLDModel(base_model.BaseModel):
         class_agnostic_bbox_pred=params.frcnn_head.class_agnostic_bbox_pred)
     if self._include_mask:
       self._mask_loss_fn = losses.MaskrcnnLoss()
-
+    #pdb.set_trace()
     self._generate_detections_fn = postprocess_ops.GenericDetectionGenerator(
         params.postprocess,
         discard_background=params.postprocess.discard_background,
@@ -128,7 +128,7 @@ class ViLDModel(base_model.BaseModel):
       rpn_rois, matched_gt_boxes, matched_gt_classes, matched_gt_indices = (
           self._sample_rois_fn(
               rpn_rois, labels['gt_boxes'], labels['gt_classes']))
-
+ 
       self.add_scalar_summary(
           'fg_bg_ratio_{}'.format(0),
 
@@ -184,7 +184,7 @@ class ViLDModel(base_model.BaseModel):
       })
 
     if not is_training:
-      #import pdb
+      import pdb
       #pdb.set_trace()
       detection_results = self._generate_detections_fn(
           box_outputs,

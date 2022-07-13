@@ -2,19 +2,20 @@
 
 RESNET_DEPTH=50
 BATCH_SIZE=1
-NUM_CLASS=4
-WEIGHTS_DIR=CLIP_embed
-CLASSIFIER_WEIGHT_PATH="tmp/label_embed.npy"
-RARE_MASK_PATH="${WEIGHTS_DIR}/lvis_rare_masks.npy"
+NUM_CLASS=9
+CLIP_DIR="CLIP_embed"
+WEIGHTS_DIR="./fake_model8"
+CLASSIFIER_WEIGHT_PATH="${WEIGHTS_DIR}/fake8.npy"
+RARE_MASK_PATH="${CLIP_DIR}/lvis_rare_masks.npy"
 
 MODEL="vild"
 IMAGE_SIZE=640
-CHECKPOINT_PATH="models/resnet50_vild/model.ckpt-180000"
+CHECKPOINT_PATH="./fake_model8/model.ckpt-180000"
 IMAGE_FILE_PATTERN="data/demo/superman_batman.jpg"
 LABEL_MAP_FILE="tmp/label_map.csv"
 PARAMS_OVERRIDE="{resnet: {resnet_depth: ${RESNET_DEPTH?}}, architecture: {num_classes: ${NUM_CLASS}}, predict: {predict_batch_size: ${BATCH_SIZE?}}, frcnn_head: {classifier_weight_path: ${CLASSIFIER_WEIGHT_PATH?}}, postprocess: {rare_mask_path: ${RARE_MASK_PATH?}}, frcnn_class_loss: {'mask_rare': True, rare_mask_path: ${RARE_MASK_PATH?}}}"
 OUTPUT_HTML="./test.html"
-CONFIG_FILE="configs/vild_resnet.yaml"
+CONFIG_FILE="configs/fake8.yaml"
 python ~/tpu/models/official/detection/inference.py \
   --model="${MODEL?}" \
   --image_size="${IMAGE_SIZE?}" \

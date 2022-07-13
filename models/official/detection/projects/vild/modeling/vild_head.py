@@ -24,7 +24,7 @@ import functools
 import numpy as np
 from six.moves import range
 import tensorflow.compat.v1 as tf
-
+import pdb
 from modeling.architecture import nn_ops
 
 
@@ -34,6 +34,7 @@ def _divide_no_nan(x, y, epsilon=1e-8):
   safe_y = tf.where(
       tf.logical_and(tf.greater_equal(y, -epsilon), tf.less_equal(y, epsilon)),
       tf.ones_like(y), y)
+  #pdb.set_trace()
   return tf.where(
       tf.logical_and(
           tf.greater_equal(tf.broadcast_to(y, x.get_shape()), -epsilon),
@@ -167,7 +168,7 @@ class ViLDFastrcnnHead(object):
       _, num_rois, height, width, filters = roi_features.get_shape().as_list()
 
       net = tf.reshape(roi_features, [-1, height, width, filters])
-
+      #pdb.set_trace()
       if self._feat_distill == 'double_branch':
         distill_net = net
 
@@ -189,7 +190,7 @@ class ViLDFastrcnnHead(object):
       # ---------------- BUILD COMMON OUTPUTS ----------------
       for i in range(self._num_convs):
         net = self._conv2d_op(
-            net,
+            net, 
             self._num_filters,
             kernel_size=(3, 3),
             strides=(1, 1),
@@ -202,7 +203,7 @@ class ViLDFastrcnnHead(object):
 
       filters = self._num_filters if self._num_convs > 0 else filters
       net = tf.reshape(net, [-1, num_rois, height * width * filters])
-
+      #pdb.set_trace()
       for i in range(self._num_fcs):
         net = tf.layers.dense(
             net,
@@ -211,7 +212,7 @@ class ViLDFastrcnnHead(object):
             name='fc{}'.format(i + 6))
         if self._use_batch_norm:
           net = self._batch_norm_activation(net, is_training=is_training)
-
+      #pdb.set_trace()
       net = tf.cast(net, tf.float32)
 
       # ---------------- BUILD DISTILL OUTPUTS for ViLD-ensemble ---------------
@@ -231,6 +232,7 @@ class ViLDFastrcnnHead(object):
                                                       is_training=is_training)
 
         filters = self._num_filters if self._num_convs > 0 else filters
+        
         distill_net = tf.reshape(
             distill_net, [-1,
                           self._max_distill_rois if is_training else num_rois,
@@ -249,14 +251,16 @@ class ViLDFastrcnnHead(object):
         distill_net = tf.cast(distill_net, tf.float32)
 
       # ---------------- VILD PROJ & NORM ----------------
+      #pdb.set_trace()
       projected_net = tf.layers.dense(
           net, units=self._clip_dim, activation=None, name='project-to-clip')
-
+          
       if self._normalize_visual:
         tf.logging.info(f'visual: {projected_net}')  # (B, num_rois, 512)
         visual_norm = tf.norm(
             projected_net, ord=2, axis=-1, keepdims=True, name='visual_norm')
         tf.logging.info(f'visual_norm: {visual_norm}')  # (B, num_rois, 1)
+        #pdb.set_trace()
         projected_net = _divide_no_nan(projected_net, visual_norm)
 
       if self._feat_distill == 'double_branch':
@@ -279,9 +283,10 @@ class ViLDFastrcnnHead(object):
               name='distill_visual_norm')
           tf.logging.info(f'distill_visual_norm: {distill_visual_norm}')
           # (B, num_all_rois, 1)
+          #pdb.set_trace()
           projected_distill_net = _divide_no_nan(projected_distill_net,
                                                  distill_visual_norm)
-
+      #pdb.set_trace()
       classifier_input = projected_net
       if self._feat_distill == 'vanilla' and is_training:
         # during inference, no need to split as there are no distill rois
@@ -308,11 +313,11 @@ class ViLDFastrcnnHead(object):
         tf.logging.info(f'loaded_numpy.shape: {loaded_numpy.shape};'
                         f' clip dim: {self._clip_dim};'
                         f' num_classes: {self._num_classes}')
-        import pdb
-        pdb.set_trace()
+        #pdb.set_trace()
         assert loaded_numpy.shape == (self._clip_dim, self._num_classes - 1)
         kernel_initializer = tf.initializers.constant(loaded_numpy)
-
+      
+      #'''
       class_outputs = tf.layers.dense(
           classifier_input,
           self._num_classes - 1,
@@ -320,13 +325,21 @@ class ViLDFastrcnnHead(object):
           kernel_initializer=kernel_initializer,
           bias_initializer=tf.zeros_initializer(),
           name='class-predict')
-
+      #'''
+      #pdb.set_trace()
+      #class_outputs = classifier_input. eval(session=tf.Session()).dot(loaded_numpy.T)
+      
+      #pdb.set_trace()
       if self._normalize_classifier:
         classifier = tf.get_variable(name='class-predict/kernel')
         # [D, num_classes]
         classifier_norm = tf.norm(classifier, ord=2, axis=0)  # [num_classes,]
+        #classifier_norm = np.linalg.norm(loaded_numpy, ord=2, axis=0)
+        #classifier_norm = tf.convert_to_tensor(classifier_norm, preferred_dtype=class_outputs.dtype)
         tf.logging.info(f'classifier_norm: {classifier_norm}')
         assert class_outputs.dtype == classifier_norm.dtype
+        #pdb.set_trace() #shape incompatible
+        #assert class_outputs.shape[-1] == classifier_norm.shape[-1]
         class_outputs = _divide_no_nan(class_outputs, classifier_norm[None,
                                                                       None, :])
 
@@ -344,6 +357,7 @@ class ViLDFastrcnnHead(object):
         bg_classifier_norm = tf.norm(bg_classifier, ord=2, axis=0)  # [1,]
         tf.logging.info(f'bg_classifier_norm: {bg_classifier_norm}')
         assert background_output.dtype == bg_classifier_norm.dtype
+        #pdb.set_trace()
         background_output = _divide_no_nan(background_output,
                                            bg_classifier_norm[None, None, :])
 
@@ -359,7 +373,7 @@ class ViLDFastrcnnHead(object):
             use_bias=False,
             kernel_initializer=kernel_initializer,
             name='class-predict')
-
+        #pdb.set_trace()
         distill_class_outputs = _divide_no_nan(distill_class_outputs,
                                                classifier_norm[None, None, :])
         distill_class_outputs *= self._temperature

@@ -1,16 +1,18 @@
 #!/bin/bash
+# fake script to get model running
 
-BATCH_SIZE=1
+BATCH_SIZE=3
 RESNET_DEPTH=50
 DATA_DIR=data/lvis
-WEIGHTS_DIR=CLIP_embed
+CLIP_DIR="CLIP_embed"
+WEIGHTS_DIR="./fake_model8"
 DEST_DIR=data/lvis_tfrecords
-MODEL_DIR=models/resnet50_vild
-EVAL_FILE_PATTERN="${n}/val*"
+MODEL_DIR="./fake_model8"
+EVAL_FILE_PATTERN="${DEST_DIR}/val*"
 VAL_JSON_FILE="${DATA_DIR}/lvis_v1_val.json"
-RARE_MASK_PATH="${WEIGHTS_DIR}/lvis_rare_masks.npy"
-CLASSIFIER_WEIGHT_PATH="${WEIGHTS_DIR}/clip_synonym_prompt.npy"
-CONFIG_FILE="configs/vild_resnet.yaml"
+RARE_MASK_PATH="${CLIP_DIR}/lvis_rare_masks.npy"
+CLASSIFIER_WEIGHT_PATH="${WEIGHTS_DIR}/fake8.npy"
+CONFIG_FILE="configs/fake8.yaml"
 python3 /home/alex/tpu/models/official/detection/main.py \
   --model="vild" \
   --model_dir="${MODEL_DIR}" \

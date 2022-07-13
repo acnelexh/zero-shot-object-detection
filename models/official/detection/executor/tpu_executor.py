@@ -204,11 +204,12 @@ class TpuExecutor(object):
       counter = 0
       try:
         while eval_times is None or counter < eval_times:
-          #import pdb
+          import pdb
           #pdb.set_trace()
           outputs = six.next(predictor)
           predictions = {}
           groundtruths = {}
+          pdb.set_trace()
           for key, val in outputs.items():
             if key[0:5] == 'pred_':
               predictions[key[5::]] = val

@@ -114,10 +114,10 @@ def main(argv):
   logging.info('Model Parameters: %s', params_str)
 
   # Builds detection model on TPUs.
-  pdb.set_trace()
+  #pdb.set_trace()
   model_fn = model_builder.ModelFn(params)
   executor = tpu_executor.TpuExecutor(model_fn, params)
-
+  #pdb.set_trace()
   # Prepares input functions for train and eval.
   train_input_fn = input_reader.InputFn(
       params.train.train_file_pattern, params, mode=ModeKeys.TRAIN,
@@ -136,6 +136,7 @@ def main(argv):
   else:
     eval_times = None
 
+  #pdb.set_trace()
   # Runs the model.
   if FLAGS.mode == 'train':
     config_utils.save_config(params_to_save, params.model_dir)
@@ -158,10 +159,10 @@ def main(argv):
       current_step = int(six.ensure_str(os.path.basename(ckpt)).split('-')[1])
 
       logging.info('Starting to evaluate.')
-      pdb.set_trace()
+      #pdb.set_trace()
       try:
         executor.evaluate(eval_input_fn, eval_times, ckpt)
-
+        #pdb.set_trace()
         if current_step >= params.train.total_steps:
           logging.info('Evaluation finished after training step %d',
                        current_step)

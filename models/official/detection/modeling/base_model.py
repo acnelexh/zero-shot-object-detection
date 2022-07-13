@@ -31,7 +31,7 @@ import tensorflow.compat.v2 as tf2
 from dataloader import mode_keys
 from modeling import learning_rates
 from utils import benchmark_utils
-
+import pdb
 
 def build_assignment_map(checkpoint_path,
                          prefix=None,
@@ -397,7 +397,7 @@ class BaseModel(six.with_metaclass(abc.ABCMeta, object)):
               self._model_dir, 'predict_model_stats.json'))
 
     predictions = self.build_predictions(outputs, labels)
-
+    #pdb.set_trace()
     tpu_estimator_spec = tf_estimator.tpu.TPUEstimatorSpec(
         mode=tf_estimator.ModeKeys.PREDICT,
         predictions=predictions)

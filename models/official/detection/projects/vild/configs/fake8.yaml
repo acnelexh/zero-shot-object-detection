@@ -13,7 +13,7 @@ architecture:
   min_level: 2
   multilevel_features: fpn
   normalize_feat_during_training: true
-  num_classes: 1204
+  num_classes: 9
   parser: vild_parser
   pre_parser: null
   space_to_depth_block_size: 1
@@ -143,7 +143,7 @@ train:
     file_pattern: ''
   regularization_variable_regex: .*(kernel|weight):0$
   space_to_depth_block_size: 1
-  total_steps: 180001 #place holder
+  total_steps: 180000
   train_batch_size: 256
   train_dataset_type: tfrecord
   transpose_input: true

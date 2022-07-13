@@ -45,6 +45,9 @@ from utils.object_detection import visualization_utils
 from hyperparameters import params_dict
 import pdb
 
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string(
@@ -147,9 +150,14 @@ def main(unused_argv):
     # Create a saver in order to load the pre-trained checkpoint.
     saver = tf.train.Saver()
     image_with_detections_list = []
+    #pdb.set_trace()
     with tf.Session() as sess:
       print(' - Loading the checkpoint...')
       saver.restore(sess, FLAGS.checkpoint_path)
+      #pdb.set_trace()
+      # Experiment with model
+      #print([tensor for op in tf.get_default_graph().get_operations() for tensor in op.values()])
+
 
       image_files = tf.gfile.Glob(FLAGS.image_file_pattern)
       for i, image_file in enumerate(image_files):
@@ -164,7 +172,7 @@ def main(unused_argv):
         np_image = (np.array(image.getdata())
                     .reshape(height, width, 3).astype(np.uint8))
                     
-        pdb.set_trace()
+        #pdb.set_trace()
         predictions_np = sess.run(
             predictions, feed_dict={image_input: image_bytes})
 
