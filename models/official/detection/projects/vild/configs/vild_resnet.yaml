@@ -144,7 +144,8 @@ train:
   regularization_variable_regex: .*(kernel|weight):0$
   space_to_depth_block_size: 1
   total_steps: 180001 #place holder
-  train_batch_size: 256
+  #train_batch_size: 256
+  train_batch_size: 2
   train_dataset_type: tfrecord
   transpose_input: true
 type: vild

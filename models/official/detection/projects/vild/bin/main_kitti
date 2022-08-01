@@ -3,14 +3,12 @@
 
 BATCH_SIZE=1
 RESNET_DEPTH=50
-DATA_DIR=data/lvis
 WEIGHTS_DIR="./CLIP_embed"
-DEST_DIR=data/small_lvis
 MODEL_DIR="./models/resnet50_vild"
-EVAL_FILE_PATTERN="${DEST_DIR}/val*"
-TRAIN_FILE_PATTERN="${DEST_DIR}/val*" #place holder
-VAL_JSON_FILE="${DATA_DIR}/lvis_v1_val.json"
-TRAIN_JSON_FILE="${DATA_DIR}/lvis_v1_train.json" #place holder
+EVAL_FILE_PATTERN="./tmp/val*"
+TRAIN_FILE_PATTERN="./tmp/val*"
+VAL_JSON_FILE="./sample.json"
+TRAIN_JSON_FILE="./sample.json"
 RARE_MASK_PATH="${WEIGHTS_DIR}/lvis_rare_masks.npy"
 CLASSIFIER_WEIGHT_PATH="${WEIGHTS_DIR}/clip_synonym_prompt.npy"
 CONFIG_FILE="./configs/vild_resnet.yaml"

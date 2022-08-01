@@ -104,24 +104,30 @@ def create_tf_example(image,
   Raises:
     ValueError: if the image pointed to by data['filename'] is not a valid JPEG
   """
+  #pdb.set_trace()
   image_height = image['height']
   image_width = image['width']
-  filename = image['coco_url']
-  filename = osp.join(*filename.split('/')[-2:])
+  filename = image['file_name']
 
   image_id = image['id']
+  # image_not_exhaustive_category_ids and image_neg_category_ids not
+  # provided in kitti, and it doesnt appear on tf record decoder, ignore
+  # for now
+  '''
   image_not_exhaustive_category_ids = image['not_exhaustive_category_ids']
   image_neg_category_ids = image['neg_category_ids']
+  '''
 
   full_path = os.path.join(image_dir, filename)
   if not tf.gfile.Exists(full_path):
     tf.logging.warn(f'image {full_path} not exists! skip')
     return False, None, None
-
+    
   with tf.gfile.GFile(full_path, 'rb') as fid:
     encoded_jpg = fid.read()
 
   key = hashlib.sha256(encoded_jpg).hexdigest()
+  '''
   feature_dict = {
       'image/height':
           dataset_util.int64_feature(image_height),
@@ -142,7 +148,24 @@ def create_tf_example(image,
       'image/image_neg_category_ids':
           dataset_util.int64_list_feature(image_neg_category_ids),
   }
-  
+  '''
+  feature_dict = {
+      'image/height':
+          dataset_util.int64_feature(image_height),
+      'image/width':
+          dataset_util.int64_feature(image_width),
+      'image/filename':
+          dataset_util.bytes_feature(filename.encode('utf8')),
+      'image/source_id':
+          dataset_util.bytes_feature(str(image_id).encode('utf8')),
+      'image/key/sha256':
+          dataset_util.bytes_feature(key.encode('utf8')),
+      'image/encoded':
+          dataset_util.bytes_feature(encoded_jpg),
+      'image/format':
+          dataset_util.bytes_feature('png'.encode('utf8'))
+  }
+
   if bbox_annotations:
     xmin = []
     xmax = []
@@ -182,7 +205,7 @@ def create_tf_example(image,
         output_io = io.BytesIO()
         pil_image.save(output_io, format='PNG')
         encoded_mask_png.append(output_io.getvalue())
-
+    #pdb.set_trace()
     feature_dict.update({
         'image/object/bbox/xmin':
             dataset_util.float_list_feature(xmin),
@@ -212,6 +235,22 @@ import pickle
 def create_single_record(record_filename, part_image_ids, image_index,
                          img_anno_map, cat_index, include_mask):
   """Create single record."""
+  '''
+  with open('dbug_params.pickle', 'wb') as handle:
+    pickle.dump({
+      'record_filename':record_filename,
+      'part_image_ids': part_image_ids,
+      'image_index': image_index,
+      'img_anno_map': img_anno_map,
+      'cat_index': cat_index,
+      'include_mask': include_mask
+    }, handle)
+  with open('dbug_params.pickle', 'rb') as handle:
+    b = pickle.load(handle)
+    for x in b:
+      print(x)
+  '''
+  #pdb.set_trace()
   writer = tf.python_io.TFRecordWriter(
       osp.join(record_filename))
   #writer = tf.python_io.TFRecordWriter(
@@ -287,6 +326,18 @@ def main(_):
     tf.logging.info(f'image_ids_parts: {image_ids_parts}')
     tf.logging.info(f'image_ids: {image_ids}')
   #pdb.set_trace()
+  '''
+  with open('dbug_params.pickle', 'rb') as handle:
+    params = pickle.load(handle)
+    record_filename = params['record_filename']
+    part_image_ids = params['part_image_ids']
+    image_index = params['image_index']
+    img_anno_map = params['img_anno_map']
+    cat_index = params['cat_index']
+    include_mask = params['include_mask']
+  create_single_record(
+    record_filename, part_image_ids, image_index, img_anno_map, cat_index, include_mask)
+  '''
   with multiprocessing.Pool(
       processes=min(FLAGS.num_parts, FLAGS.max_num_processes)) as pool:
     pool.starmap(
@@ -296,6 +347,7 @@ def main(_):
             [FLAGS.include_mask] * FLAGS.num_parts))
     pool.close()
     pool.join()
+  
 
 
 if __name__ == '__main__':
