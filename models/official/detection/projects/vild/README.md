@@ -109,3 +109,9 @@ If you find this repo to be useful to your research, please cite our paper:
 In this repo, we use [OpenAI's CLIP model](https://github.com/openai/CLIP) as the open-vocabulary image classification model, i.e., the teacher model.
 
 The code is built upon [Cloud TPU detection](https://github.com/tensorflow/tpu/tree/master/models/official/detection).
+
+
+# Start Training
+Run python main.py to convert Almodel annotation to sample.json (lvis format)
+Run ./bin/pre_process_kitti to combine kitti dataset (images) with sample.json
+Run ./bin/main_kitti to start training
