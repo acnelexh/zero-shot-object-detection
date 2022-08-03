@@ -97,4 +97,4 @@ def generate_annotations(image_type = "training"):
         },f)
 
     
-generate_annotations()
+generate_annotations()  

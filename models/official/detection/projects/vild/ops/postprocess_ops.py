@@ -93,7 +93,6 @@ def _generate_detections_v1(boxes,
     valid_detections: `int` Tensor of shape [batch_size] only the top
       `valid_detections` boxes are valid detections.
   """
-  pdb.set_trace()
   with tf.name_scope('generate_detections'):
     batch_size = scores.get_shape().as_list()[0]
     nmsed_boxes = []
@@ -114,7 +113,7 @@ def _generate_detections_v1(boxes,
       nmsed_scores.append(nmsed_scores_i)
       nmsed_classes.append(nmsed_classes_i)
       valid_detections.append(valid_detections_i)
-  pdb.set_trace()
+  #pdb.set_trace()
   nmsed_boxes = tf.stack(nmsed_boxes, axis=0)
   nmsed_scores = tf.stack(nmsed_scores, axis=0)
   nmsed_classes = tf.stack(nmsed_classes, axis=0)

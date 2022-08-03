@@ -19,6 +19,7 @@ A decoder to decode string tensors containing serialized tensorflow.Example
 protos for object detection.
 """
 import tensorflow.compat.v1 as tf
+import pdb
 
 
 def _get_source_id_from_encoded_image(parsed_tensors):
@@ -132,6 +133,7 @@ class TfExampleDecoder(object):
             [None, None, None].
         - groundtruth_instance_masks_png: a string tensor of shape [None].
     """
+    #pdb.set_trace()
     parsed_tensors = tf.io.parse_single_example(
         serialized_example, self._keys_to_features)
     for k in parsed_tensors:
@@ -201,4 +203,5 @@ class TfExampleDecoder(object):
             'groundtruth_visual_features': roi_features,
             'roi_scores': roi_scores,
         })
+    #print(decoded_tensors)
     return decoded_tensors

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DATA_DIR=./data/kitti/training/image_2
+DEST_DIR=./data/lvis_tfrecords
+VAL_JSON="./data/lvis/lvis_v1_val.json.json"
+python3 preprocessing/create_kitti_tf_record.py \
+  --image_dir="${DATA_DIR}" \
+  --json_path="${VAL_JSON}" \
+  --include_mask=True \
+  --split='val' \
+  --num_parts=30 \
+  --max_num_processes=1 \
+  --dest_dir="${DEST_DIR}"

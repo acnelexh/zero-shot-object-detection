@@ -136,7 +136,7 @@ def main(argv):
   else:
     eval_times = None
 
-  #pdb.set_trace()
+  pdb.set_trace()
   # Runs the model.
   if FLAGS.mode == 'train':
     config_utils.save_config(params_to_save, params.model_dir)
